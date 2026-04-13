@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toaster Notification</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="min-h-screen bg-stone-100 flex items-center justify-center font-sans">
+
+  <input type="checkbox" id="t" class="hidden peer">
+<button id="theme">
+  <i id="themer" class="fa-solid fa-circle-half-stroke"></i>
+  </button>
+  <label for="t" class="px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl cursor-pointer hover:bg-gray-700 active:scale-95 transition-all select-none">
+    Show notification
+  </label>
+  <div class="parent fixed flex flex-col">
+
+
+  </div> 
+   </div>
+
+  <style>
+    #theme{
+        font-size: 30px;
+    }
+   .toaster {
+  opacity: 0;                              /* start hidden */
+  transform: translateY(-8px) scale(0.95); /* start shifted up */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toaster.show {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+
+.toaster.hidden {
+  opacity: 0;
+  transform: translateY(8px) scale(0.95);
+  pointer-events: none;
+}
+    .parent{
+        display: flex;
+        height: fit-content;
+        top:30px;
+        
+        width:fit-content;
+        right:7px;
+        flex-direction: column;
+        gap:10px;
+    }
+
+    @keyframes changeintime{
+        from{
+            width:100%;
+        }
+        to{
+            width:0%;
+        }
+    }
+  </style>
+  <script>
+    // let toaster = document.querySelector('.toaster');
+    // let parent = document.querySelector('.parent')
+    let back = document.querySelector('#theme')
+    let btn = document.querySelector('label[for="t"]');
+    back.className = ` ${localStorage.themer === 'dark' ? 'text-white' : 'text-black'}`
+    document.body.className = `min-h-screen ${localStorage.themer === 'dark' ? 'bg-gray-900' : 'bg-stone-100'}  flex items-center justify-center font-sans`
+    document.querySelector('label').className = `px-6 py-2.5 ${localStorage.themer === 'dark' ? 'bg-stone-100' : 'bg-gray-900'} ${localStorage.themer === 'dark' ? 'text-black' : 'text-white'} text-sm font-medium rounded-xl cursor-pointer hover:bg-gray-700 active:scale-95 transition-all select-none`
+    btn.addEventListener('click', function(){ 
+      toast()
+    });
+    // let themer = "light"
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    localStorage.setItem('themer','dark')
+    } else {
+    localStorage.setItem('themer','light')
+    }
+    
+    back.addEventListener('click',function (){
+    if (localStorage.themer === 'dark'){
+        localStorage.setItem('themer','light')
+        
+
+        console.log(localStorage.themer)
+    }
+    else{
+        localStorage.setItem('themer','dark')
+        console.log(localStorage.themer)
+    }
+    back.className = ` ${localStorage.themer === 'dark' ? 'text-white' : 'text-black'}`
+    document.body.className = `min-h-screen ${localStorage.themer === 'dark' ? 'bg-gray-900' : 'bg-stone-100'}  flex items-center justify-center font-sans`
+    document.querySelector('label').className = `px-6 py-2.5 ${localStorage.themer === 'dark' ? 'bg-stone-100' : 'bg-gray-900'} ${localStorage.themer === 'dark' ? 'text-black' : 'text-white'} text-sm font-medium rounded-xl cursor-pointer hover:bg-gray-700 active:scale-95 transition-all select-none`
+
+    })
+
+
+    function notification(config){
+        let parent = document.querySelector('.parent')
+        return function(){
+            let toaster = document.createElement('div');
+            toaster.className = `toaster shrink-0 relative w-80 ${localStorage.themer === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} border border-stone-200 rounded-2xl px-4 py-4 flex items-start gap-3 shadow-lg overflow-hidden`
+            let emerald = document.createElement('div');
+            emerald.className = `mt-0.5 w-5 h-5 flex-shrink-0 bg-emerald-100 rounded-full flex items-center justify-center`;
+            emerald.innerHTML = `<svg class="w-3 h-3 stroke-emerald-600" viewBox="0 0 12 12" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="2,6 5,9 10,3"/>
+      </svg>`
+         let content = document.createElement('div');
+         content.className = 'flex-1'
+         content.innerHTML = `<p class="text-sm font-medium text-inherit ">${config.title}</p>
+      <p class="text-xs text-inherit mt-0.5 leading-relaxed">${config.description}</p>`
+        
+        let label = document.createElement('label')
+        label.setAttribute('for','t')
+        label.className=`text-inherit hover:text-gray-500 cursor-pointer text-lg leading-none -mt-0.5 select-none transition-colors`
+        let last = document.createElement('div')
+        last.style.animation = `changeintime ${((config.duration)/1000)+'s'} linear forwards`
+        last.className = 'absolute bottom-0 left-0 h-0.5 w-full bg-emerald-500 rounded-b-2xl origin-left animate-[shrink_4s_linear_forwards]'
+        parent.classList.add('flex')
+        parent.appendChild(toaster)
+        toaster.appendChild(emerald)
+        toaster.appendChild(content)
+        toaster.appendChild(label)
+        toaster.appendChild(last)
+        
+        requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    toaster.classList.add('show')
+        setTimeout( () => {
+            toaster.classList.remove('show')
+            toaster.classList.add('hidden')
+            toaster.remove()
+        },config.duration);
+    })
+})
+        }
+    }
+    let toast = notification({
+      title: 'Changes saved',
+      description: 'Your profile has been updated successfully.',
+      type: 'success',
+      positionX:'right',
+      positionY:'bottom',
+      theme:localStorage.themer,
+      duration: 4000
+    });
+
+
+  </script>
+
+</body>
+</html>
