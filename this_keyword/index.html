@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 class="h1">h1</h1>
+    <h1 class="h1">h3</h1>
+    <h1 class="h1">h4</h1>
+    <h1 class="h1">h5</h1>
+    <h1 class="h1">h6</h1>
+</body>
+<script>
+    console.log(this)
+    function abc(conf){
+
+        console.log(this)
+    }
+    abc('hi')
+
+    let object = {
+        name : 'srijan',
+        work : function (){
+            console.log(this.name)
+        }
+    }
+    // console.log(object)
+    object.work()
+    let h1 = document.querySelectorAll('.h1')
+    h1.forEach(h => {
+        h.addEventListener('click',function(){
+        if(h.style.color !== 'red'){
+            h.style.color = 'red'
+        }
+        else{
+            h.style.color = 'black'
+        }
+        
+    })
+    });
+
+    class as{
+        constructor(name){
+            console.log('fuck this off')
+            this.name = name
+            console.log(this)
+        }
+        names() {
+            console.log(this.name)
+        }
+    }
+
+    obj1 = new as('sabin')
+    // obj1.name(
+    obj1.names()
+</script>
+</html>
